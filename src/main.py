@@ -9,6 +9,7 @@ hand - The cards held by one player
 deal - Distributing the cards
 '''
 #Main module contains only the function calls. Do not add other code.
+#Pushed to github
 
 
 import runGame
