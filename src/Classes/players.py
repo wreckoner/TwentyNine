@@ -4,6 +4,7 @@ Created on Jun 13, 2014
 '''
 import collections
 import random
+from GamePlay import scoreModule
 
 class PlayersClass():
     '''
@@ -15,7 +16,11 @@ class PlayersClass():
         self.player3 = players[2]
         self.player4 = players[3]
         self.players = players
-        self.previousHand = None
+        self.bid = 0
+        self.bidder = None
+        self.trump = None
+        self.previousTurn = None
+        self.trumpShown = False
         self.makeTeams()
         self.bidding()
         
@@ -36,20 +41,20 @@ class PlayersClass():
         
     
     def playOneTurn(self):
-        if len(self.player1.hand) > 0:                      # Checks if a player has any card left
+        if len(self.players[0].hand) > 0:                   # Checks if a player has any card left
             table = []
             for player in self.players:
                 table = player.ChooseCard(table)
             self.previousTurn = table
             self.scoreTurn()
             print "The played Round is : ", table
+            print "Team1 - %s | Team2 - %s"%(self.team1[2],self.team2[2])
             return True
         else:
             return False
         
     def scoreTurn(self):
-        #scoreModule.ScoreHand(self.players, self.previousTurn, self.trump, self.team1, self.team2)
-        pass
+        scoreModule.ScoreHand(self)
     
     def bringToFront(self, index):
         # Brings the player at given index to the front while maintaining order of the players.
