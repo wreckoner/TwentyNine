@@ -50,6 +50,7 @@ class GameManagerClass():
             return False
         elif len(self.players[0].hand) > 0:
             os.system("cls")
+            if self.trump_shown: print "The trump is", self.trump
             self.played_cards += self.previous_turn_cards
             del self.previous_turn_cards[:]
             for player in self.players: player.ChooseCard(self.previous_turn_cards)
@@ -67,18 +68,18 @@ class GameManagerClass():
         self.players = list(player_list)
         
     def print_turn_results(self):
-        print "%s has bid %s" %(self.bidder, max(self.bids))
+        print "%s has bid %s" %(self.team1 if self.bidder in self.team1 else self.team2, max(self.bids))
         print "The played turn was : ", self.previous_turn_cards
         print self.team1, self.team2
         
     def check_win_condition(self):
-        if self.bidder in self.team1 and self.team1[2] is max(self.bids): 
+        if self.bidder in self.team1 and self.team1[2] >= max(self.bids): 
             print "%s has won the bid. They are the winners" %self.team1; return True
-        elif self.bidder in self.team2 and self.team2[2] is max(self.bids):
+        elif self.bidder in self.team2 and self.team2[2] >= max(self.bids):
             print "%s has won the bid. They are the winners" %self.team2; return True
-        elif self.bidder not in self.team1 and self.team1[2] is (28 - max(self.bids)):
+        elif self.bidder not in self.team1 and self.team1[2] >= (28 - max(self.bids)):
             print "%s has defeated the bid. They are the winners" %self.team1; return True
-        elif self.bidder not in self.team2 and self.team2[2] is (28 - max(self.bids)):
+        elif self.bidder not in self.team2 and self.team2[2] >= (28 - max(self.bids)):
             print "%s has defeated the bid. They are the winners" %self.team2; return True
         else: return False
         

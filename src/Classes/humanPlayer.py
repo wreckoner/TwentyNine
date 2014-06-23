@@ -3,7 +3,6 @@ Created on Jun 11, 2014
 
 @author: Dibyendu
 '''
-from Display import PrintToConsole
 
 class HumanPlayerClass():
     '''
@@ -32,7 +31,10 @@ class HumanPlayerClass():
         self.parent.trump = suits[int(index)]
     
     def ChooseCard(self, turn_cards):
-        i = raw_input("Your hand is %s. Enter index number of the card you choose : "%self.hand)
+        i = raw_input("Your hand is %s. Enter index number of the card you choose. Or press enter to reveal trump : "%self.hand)
+        if not i.isdigit():
+            self.parent.trump_shown = True
+            i = raw_input("Now enter the index number of your desired card : ")
         choice = self.hand[int(i)]
         turn_cards.append(choice)
         self.hand.remove(choice)
