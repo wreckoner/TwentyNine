@@ -3,17 +3,28 @@
 This module contains the decision logics of the computer players
 '''
 import random
-
-
-def RandomCardSelect(hand, table):              # This method is a random card selector.
-    if len(table) == 0:                         # Checks to see if it is the first player in the turn
-        choice = random.choice(hand)
-    else:                                       # Searches for cards of the played suit and selects
-        suitCards = [card for card in hand if card.suit == table[0].suit]
-        if len(suitCards) > 0: 
-            choice = random.choice(suitCards)
-        else:                                   # If there are no suit cards, chooses a random card
-            choice = random.choice(hand)
-    hand.remove(choice)
-    table.append(choice)
-    return (hand, table)
+    
+def random_card_select(cpu_player):
+    if len(cpu_player.parent.previous_turn_cards) == 0:                     # Check to see if it is the first player
+        choice = random.choice(cpu_player.hand)
+    else:
+        suit = cpu_player.parent.previous_turn_cards[0].suit
+        suit_cards = [card for card in cpu_player.hand if card.suit == suit]
+        trump_cards = [card for card in cpu_player.hand if card.suit == cpu_player.parent.trump]
+        if len(suit_cards) > 0:                                             # If it has cards of the played suit
+            choice = random.choice(suit_cards)
+        elif cpu_player.parent.trump_shown:                                 # If trump is shown, it'll play trump
+            if len(trump_cards) > 0:
+                choice = random.choice(trump_cards)
+            else:                                                           # If no trump selects a random card
+                choice = random.choice(cpu_player.hand)
+        else:
+            cpu_player.parent.trump_shown = True                            # If trump not shown, will show it
+            print "Trump revealed! It is :", cpu_player.parent.trump
+            if len(trump_cards) > 0:
+                choice = random.choice(trump_cards)
+            else:
+                choice = random.choice(cpu_player.hand)
+    cpu_player.hand.remove(choice)
+    cpu_player.parent.previous_turn_cards.append(choice)
+        

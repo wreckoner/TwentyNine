@@ -19,7 +19,7 @@ class HumanPlayerClass():
     
     def MakeBid(self):
         print "Your hand is :",self.hand
-        bid = raw_input("Enter a bid between 16 and 22, or press return to pass to the next user")
+        bid = raw_input("Enter a bid greater than any previous bid with a minimum of 16, or press return to pass to the next user : ")
         if bid.isdigit():
             return int(bid)
         else:

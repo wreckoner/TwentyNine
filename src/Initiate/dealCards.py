@@ -6,11 +6,11 @@ Created on Jun 10, 2014
 
 import random, collections
 
-def DealHand(playDeck):        #Deals 8 cards from the playDeck to hand
-    hand = random.sample(playDeck, 8)
-    for card in hand:
+def DealHand(playDeck):        #Deals 8 cards from the playDeck to computer_player
+    computer_player = random.sample(playDeck, 8)
+    for card in computer_player:
         playDeck.remove(card)
-    return (hand, playDeck)
+    return (computer_player, playDeck)
 
 def DealHands(playDeck):      # Deals cards to all four players and returns the hands
     hands = []

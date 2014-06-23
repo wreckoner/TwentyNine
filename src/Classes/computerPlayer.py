@@ -21,11 +21,10 @@ class ComputerPlayerClass():
         return "CPU. ID - %s" %self.index
     
     def MakeBid(self):
-        choices = range(16,24)
-        for _ in range(1,10): choices.append(False)
+        choices = range(16,24) + [False for _ in range(1,8)]
         while True:
             bid = random.choice(choices)
-            if bid in self.parent.bids: bid = random.choice(choices)
+            if len(self.parent.bids) != 0 and bid and bid <= max(self.parent.bids): bid = random.choice([False, bid + 1])
             else: break
         PrintToConsole.print_to_console(("%s bid : %s" %(self, bid if bid is not False else "pass")))
         return bid
@@ -44,6 +43,6 @@ class ComputerPlayerClass():
             self.parent.trump = max(temp)[0]
             
     def ChooseCard(self, turn_cards):
-        # Chooses a card from its hand. Takes a turn_cards as parameter.
-        (self.hand, turn_cards) = decisionLogic.RandomCardSelect(self.hand, turn_cards)
+        # Chooses a card from its hand.
+        decisionLogic.random_card_select(self)
         PrintToConsole.print_to_console(("%s played %s" %(self.__repr__(), turn_cards[-1])))
