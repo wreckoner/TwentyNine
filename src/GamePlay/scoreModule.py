@@ -3,16 +3,13 @@ Created on Jun 11, 2014
 @author: Dibyendu
 '''
 
-def ScoreHand(playersObject):
-    # This method scores a hand and decides the winning team after it has been played.
-    score = 0
-    priority = 0
-    trumpPriority = 0
-    trumpFlag = False
-    suit = playersObject.previousTurn[0].suit
-    if playersObject.trumpShown:
-        for card, player in zip(playersObject.previousTurn, playersObject.players):
-            if card.suit == playersObject.trump and card.priority > trumpPriority:
+def ScoreHand(game_manager_object):
+    # This method scores a hand and updates the scores of each team.
+    score, priority, trumpPriority, trumpFlag = 0, 0, 0, False
+    suit = game_manager_object.previous_turn_cards[0].suit
+    if game_manager_object.trump_shown:
+        for card, player in zip(game_manager_object.previous_turn_cards, game_manager_object.players):
+            if card.suit == game_manager_object.trump and card.priority > trumpPriority:
                 winner = player
                 trumpPriority = card.priority
                 trumpFlag = True
@@ -21,12 +18,12 @@ def ScoreHand(playersObject):
                 priority = card.priority
             score += card.value
     else:
-        for card, player in zip(playersObject.previousTurn, playersObject.players):
+        for card, player in zip(game_manager_object.previous_turn_cards, game_manager_object.players):
             if card.suit == suit and card.priority > priority:
                 winner = player
                 priority = card.priority
             score += card.value
-    if winner in playersObject.team1: playersObject.team1[2] += score
-    else: playersObject.team2[2] += score
+    if winner in game_manager_object.team1: game_manager_object.team1[2] += score
+    else: game_manager_object.team2[2] += score
     
         

@@ -3,13 +3,15 @@ Created on Jun 11, 2014
 
 @author: Dibyendu
 '''
+from Display import PrintToConsole
 
 class HumanPlayerClass():
     '''
     This is a Human player class. Takes a list of cards as parameter
     '''
-    def __init__(self, hand, index):
+    def __init__(self, hand, index, parent):
         self.hand = sorted(hand,key = lambda x : x.suit)
+        self.parent = parent
         self.index = index
         self.trump = False
     
@@ -30,12 +32,11 @@ class HumanPlayerClass():
         self.trump = suits[int(index)]
         return self.trump
     
-    def ChooseCard(self, table):
-        #TODO: Write a method.
-        print "Choose a card from your hand : ",self.hand
+    def ChooseCard(self, turn_cards):
+        PrintToConsole.print_to_console(("Choose a card from your hand - %s : " %self.hand))
         i = raw_input("Enter index number : ")
         choice = self.hand[int(i)]
-        table.append(choice)
+        turn_cards.append(choice)
         self.hand.remove(choice)
-        return table
+        return turn_cards
         
