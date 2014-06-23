@@ -41,11 +41,9 @@ class ComputerPlayerClass():
                 temp[2][1] += 1
             else:
                 temp[3][1] += 1
-            self.trump = max(temp)[0]
-            return self.trump
+            self.parent.trump = max(temp)[0]
             
     def ChooseCard(self, turn_cards):
         # Chooses a card from its hand. Takes a turn_cards as parameter.
         (self.hand, turn_cards) = decisionLogic.RandomCardSelect(self.hand, turn_cards)
         PrintToConsole.print_to_console(("%s played %s" %(self.__repr__(), turn_cards[-1])))
-        #return turn_cards

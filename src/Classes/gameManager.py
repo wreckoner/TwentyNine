@@ -12,7 +12,6 @@ class GameManagerClass():
     '''
     This class manages the game.
     '''
-
     def __init__(self, params):
         self.initialize_variables()
         self.make_players()
@@ -26,7 +25,9 @@ class GameManagerClass():
         self.played_cards = []
         self.previous_turn_cards = []
         self.bids = []
+        self.bidder = None
         self.trump_shown = False
+        self.trump = None
     
     def make_players(self):
         self.players = MakePlayers(numberOfHumans = 1, positions = [1], parent = self)
@@ -42,17 +43,18 @@ class GameManagerClass():
         for player in self.players : self.bids.append(player.MakeBid())
         if not max(self.bids): self.bidding_by_players()
         else: self.bidder = self.players[self.bids.index(max(self.bids))]
-        self.trump = self.bidder.SelectTrump()
+        self.bidder.SelectTrump()
         
     def play_one_turn(self):
-        if len(self.players[0].hand) > 0:
+        if self.check_win_condition():
+            return False
+        elif len(self.players[0].hand) > 0:
             os.system("cls")
             self.played_cards += self.previous_turn_cards
             del self.previous_turn_cards[:]
             for player in self.players: player.ChooseCard(self.previous_turn_cards)
-            print "played hand is - ",self.previous_turn_cards
             self.score_turn()
-            print self.team1,self.team2
+            self.print_turn_results()
             return True
         else: return False
         
@@ -63,4 +65,20 @@ class GameManagerClass():
         player_list = collections.deque(self.players)
         player_list.rotate(- index)
         self.players = list(player_list)
+        
+    def print_turn_results(self):
+        print "%s has bid %s" %(self.bidder, max(self.bids))
+        print "The played turn was : ", self.previous_turn_cards
+        print self.team1, self.team2
+        
+    def check_win_condition(self):
+        if self.bidder in self.team1 and self.team1[2] is max(self.bids): 
+            print "%s has won the bid. They are the winners" %self.team1; return True
+        elif self.bidder in self.team2 and self.team2[2] is max(self.bids):
+            print "%s has won the bid. They are the winners" %self.team2; return True
+        elif self.bidder not in self.team1 and self.team1[2] is (28 - max(self.bids)):
+            print "%s has defeated the bid. They are the winners" %self.team1; return True
+        elif self.bidder not in self.team2 and self.team2[2] is (28 - max(self.bids)):
+            print "%s has defeated the bid. They are the winners" %self.team2; return True
+        else: return False
         

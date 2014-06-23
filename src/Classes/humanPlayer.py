@@ -20,7 +20,7 @@ class HumanPlayerClass():
     
     def MakeBid(self):
         print "Your hand is :",self.hand
-        bid = raw_input("Enter a bid between 16 and 22, or press return to pass to the next user.")
+        bid = raw_input("Enter a bid between 16 and 22, or press return to pass to the next user")
         if bid.isdigit():
             return int(bid)
         else:
@@ -29,14 +29,11 @@ class HumanPlayerClass():
     def SelectTrump(self):
         suits = ["clubs", "diamonds", "hearts", "spades"]
         index = raw_input("%s. Enter the index of the suit you want to select as trump : "%(suits))
-        self.trump = suits[int(index)]
-        return self.trump
+        self.parent.trump = suits[int(index)]
     
     def ChooseCard(self, turn_cards):
-        PrintToConsole.print_to_console(("Choose a card from your hand - %s : " %self.hand))
-        i = raw_input("Enter index number : ")
+        i = raw_input("Your hand is %s. Enter index number of the card you choose : "%self.hand)
         choice = self.hand[int(i)]
         turn_cards.append(choice)
         self.hand.remove(choice)
-        return turn_cards
         
