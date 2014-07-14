@@ -9,7 +9,6 @@ from Classes import gameManager
 def StartGame():
     return MakePlayers(numberOfHumans = 1, positions = [1], parent = None)
     # For now we only consider 1 human and at the first position
-    
 
 def Run(status):
     while True:

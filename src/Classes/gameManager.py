@@ -3,10 +3,8 @@ Created on Jun 22, 2014
 @author: Dibyendu
 '''
 from Initiate.create import MakePlayers
-import collections
-import random
-from GamePlay import scoreModule
-import os
+import collections, random, os
+from game_play import scoreModule
 
 class GameManagerClass():
     '''
@@ -28,6 +26,7 @@ class GameManagerClass():
         self.bidder = None
         self.trump_shown = False
         self.trump = None
+        
     
     def make_players(self):
         self.players = MakePlayers(numberOfHumans = 1, positions = [1], parent = self)

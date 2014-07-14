@@ -1,16 +1,14 @@
 '''
 Created on Jun 10, 2014
-
 @author: Dibyendu
 '''
 
 import random, collections
 
 def DealHand(playDeck):        #Deals 8 cards from the playDeck to computer_player
-    computer_player = random.sample(playDeck, 8)
-    for card in computer_player:
-        playDeck.remove(card)
-    return (computer_player, playDeck)
+    hand = random.sample(playDeck, 8)
+    playDeck = [card for card in playDeck if card not in hand]
+    return (sorted(hand, key = lambda x: (x.suit, x.priority)), playDeck)
 
 def DealHands(playDeck):      # Deals cards to all four players and returns the hands
     hands = []

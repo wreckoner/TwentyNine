@@ -2,9 +2,8 @@
 Created on Jun 11, 2014
 @author: Dibyendu
 '''
-from GamePlay import decisionLogic
+from game_play import decisionLogic
 import random
-from Display import PrintToConsole
 
 
 class ComputerPlayerClass():
@@ -26,7 +25,7 @@ class ComputerPlayerClass():
             bid = random.choice(choices)
             if len(self.parent.bids) != 0 and bid and bid <= max(self.parent.bids): bid = random.choice([False, bid + 1])
             else: break
-        PrintToConsole.print_to_console(("%s bid : %s" %(self, bid if bid is not False else "pass")))
+        print "%s bid : %s" %(self, bid if bid is not False else "pass")
         return bid
     
     def SelectTrump(self):
@@ -45,4 +44,4 @@ class ComputerPlayerClass():
     def ChooseCard(self, turn_cards):
         # Chooses a card from its hand.
         decisionLogic.random_card_select(self)
-        PrintToConsole.print_to_console(("%s played %s" %(self.__repr__(), turn_cards[-1])))
+        print "%s played %s" %(self.__repr__(), turn_cards[-1])
