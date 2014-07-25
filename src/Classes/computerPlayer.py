@@ -11,13 +11,14 @@ class ComputerPlayerClass():
     This is a computer player class. Takes a hand of cards as parameter.
     '''
     def __init__(self, hand, index, parent):
-        self.hand = sorted(hand,key = lambda x : x.suit)
+        self.hand = None
         self.parent = parent
         self.trump = False
         self.index = index
+        self.loc = []
         
     def __repr__(self):
-        return "CPU. ID - %s" %self.index
+        return "CPU %s" %self.index
     
     def MakeBid(self):
         choices = range(16,24) + [False for _ in range(1,8)]
@@ -41,7 +42,11 @@ class ComputerPlayerClass():
                 temp[3][1] += 1
             self.parent.trump = max(temp)[0]
             
-    def ChooseCard(self, turn_cards):
+    def choose_card(self, turn_cards):
         # Chooses a card from its hand.
-        decisionLogic.random_card_select(self)
-        print "%s played %s" %(self.__repr__(), turn_cards[-1])
+        choice = decisionLogic.random_card_select(self, turn_cards)
+        print "%s played %s" %(self.__repr__(), choice)
+        return choice
+        
+    def sort_hand(self):
+        self.hand = sorted(self.hand, key = lambda x : (x.sort_key, x.priority ))

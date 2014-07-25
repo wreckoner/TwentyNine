@@ -8,13 +8,16 @@ class HumanPlayerClass():
     This is a Human player class. Takes a list of cards as parameter
     '''
     def __init__(self, hand, index, parent):
-        self.hand = sorted(hand,key = lambda x : x.suit)
+        self.hand = hand
         self.parent = parent
         self.index = index
         self.trump = False
+        self.loc = []
+        self.clicked = 8        # Used to keep track of which card has been selected
+        self.selected_card_index = 8
     
     def __repr__(self):
-        return "Human. ID - %s" %self.index
+        return "Human %s" %self.index
     
     def MakeBid(self):
         print "Your hand is :",self.hand
@@ -29,12 +32,13 @@ class HumanPlayerClass():
         index = raw_input("%s. Enter the index of the suit you want to select as trump : "%(suits))
         self.parent.trump = suits[int(index)]
     
-    def ChooseCard(self, turn_cards):
-        i = raw_input("Your hand is %s. Enter index number of the card you choose. Or press enter to reveal trump : "%self.hand)
-        if not i.isdigit():
-            self.parent.trump_shown = True
-            i = raw_input("Now enter the index number of your desired card : ")
-        choice = self.hand[int(i)]
-        turn_cards.append(choice)
+    def choose_card(self):
+        # redundant method in graphic game, since card selection is done graphically.
+        choice = self.hand[self.selected_card_index]
+        self.parent.played_turn.append(choice)
         self.hand.remove(choice)
+        print 'you played', choice
+        self.selected_card_index, self.clicked = 8, 8
         
+    def sort_hand(self):
+        self.hand = sorted(self.hand, key = lambda x : (x.sort_key, x.priority ))

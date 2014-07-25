@@ -2,7 +2,7 @@
 Created on Jun 22, 2014
 @author: Dibyendu
 '''
-from Initiate.create import MakePlayers
+#from Initiate.create import MakePlayers
 import collections, random, os
 from game_play import scoreModule
 
@@ -29,7 +29,8 @@ class GameManagerClass():
         
     
     def make_players(self):
-        self.players = MakePlayers(numberOfHumans = 1, positions = [1], parent = self)
+        #self.players = MakePlayers(numberOfHumans = 1, positions = [1], parent = self)
+        pass
         
     def make_teams(self):
         self.team1 = [player for player in self.players if player.index%2 is not 0]

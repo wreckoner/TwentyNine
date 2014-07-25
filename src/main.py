@@ -8,10 +8,9 @@ Some terminologies  used in the code:
 hand - The cards held by one player
 deal - Distributing the cards
 '''
-# Main module contains only the function calls. Do not add other code.
 
-import runGame
+from Classes.overseer import overseer
 
-if __name__ == "__main__":
-    runGame.Run(status = "start")
-    
+if __name__ == '__main__':
+    game = overseer()
+    game.run()
