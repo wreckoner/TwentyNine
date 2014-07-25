@@ -3,6 +3,7 @@ Created on Jul 14, 2014
 @author: Dibyendu
 '''
 import pygame
+import math
 from pygame.locals import HWACCEL, SWSURFACE, QUIT, KEYDOWN
 from display_engine.methods import load_image
 from Classes.humanPlayer import HumanPlayerClass
@@ -84,7 +85,8 @@ class overseer():
                 print '%s played %s' %(player, choice)
                 if len(player.hand): 
                     draw_players.draw_player(player, self.images['screen'], self.images['background'])
-            pygame.time.delay(500)
+            pygame.time.delay(500+int(math.pow(0, player.index % 4))*3000)
+          
         self.cards += self.turn
         self.turn = []
         print '************************************************'

@@ -23,7 +23,8 @@ def menu_screen(image_dict):
     title = pygame.transform.smoothscale(title, (width, height))
     title_rect = title.get_rect()
     title_rect.center = screen.get_rect().center
-    
+    pygame.mixer.music.load('sound/super_mario.mp3')
+    pygame.mixer.music.play(loops=-1, start=0.0)
     while True:
         
         key = random.choice(list(cards.keys()))
@@ -32,11 +33,11 @@ def menu_screen(image_dict):
         image = pygame.transform.rotozoom(image, random.choice(xrange(0, 360)), 1)
         screen.blit(image, (random.choice(x_limit), random.choice(y_limit)))
         screen.blit(title, title_rect)
-        pygame.time.delay(50)
+        pygame.time.delay(100)
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type is pygame.KEYDOWN and event.key is pygame.K_RETURN: 
                 screen.blit(background, screen.get_rect())
                 return True
-            elif event.type is pygame.KEYDOWN and event.key is pygame.K_ESCAPE: 
+            elif event.type is pygame.KEYDOWN and event.key is pygame.K_ESCAPE:
                 return False

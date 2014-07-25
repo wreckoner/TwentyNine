@@ -13,4 +13,3 @@ from Classes.overseer import overseer
 if __name__ == '__main__':
     game = overseer()
     game.run()
-    

@@ -8,6 +8,7 @@ import pygame
 from display_engine.draw_selected_cards_module import draw_selected_card
 from display_engine.draw_players import draw_player
 from display_engine.blit import static
+pygame.mixer.pre_init(44100, -16, 1, 512)
 
 def select_a_card(player, screen, background):
     '''
@@ -21,6 +22,7 @@ def select_a_card(player, screen, background):
         for event in pygame.event.get():
             if event.type is pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
+                pygame.mixer.Sound('sound/Water Drop-SoundBible.com-2039669379.wav').play()
                 flag, index = user_animation(player, screen, background, pos, index)
                 if flag: running = False
     return index
