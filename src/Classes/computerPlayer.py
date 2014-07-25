@@ -11,7 +11,7 @@ class ComputerPlayerClass():
     This is a computer player class. Takes a hand of cards as parameter.
     '''
     def __init__(self, hand, index, parent):
-        self.hand = None
+        self.hand = hand
         self.parent = parent
         self.trump = False
         self.index = index

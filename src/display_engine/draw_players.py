@@ -7,10 +7,9 @@ Not to be used for dealing cards animation.
 '''
 from display_engine.methods import load_image
 import pygame
-from display_engine.partial_update import get_area_of_player
 from display_engine.image_files import card_files
 
-def draw_player(player, screen, background, selected_card_index = 8, raised = False):
+def draw_player(player, screen, background, selected_card_index = 8, time_delay = 0, raised = False):
     '''This method draws the hands of the players in their positions on the table.
     Set raised to True and provide an index number less than 8 to highlight a selected card.
     Useful to animate card select action by the user!'''
@@ -19,21 +18,19 @@ def draw_player(player, screen, background, selected_card_index = 8, raised = Fa
     bottom_offset = 0.05        # 10% of screen from the bottom
     ##############################################################################################
     if player.index is 1:
-        draw_user(player, screen, background, card_scale, boundary_offset, bottom_offset, selected_card_index, raised)
+        draw_user(player, screen, background, card_scale, boundary_offset, bottom_offset, selected_card_index, time_delay, raised)
     elif player.index is 2:
-        draw_player_2(len(player.hand), screen, background, card_scale, boundary_offset, bottom_offset)
+        draw_player_2(len(player.hand), screen, background, card_scale, boundary_offset, bottom_offset, time_delay)
     elif player.index is 3:
-        draw_player_3(len(player.hand), screen, background, card_scale, boundary_offset, bottom_offset)
+        draw_player_3(len(player.hand), screen, background, card_scale, boundary_offset, bottom_offset, time_delay)
     elif player.index is 4:
-        draw_player_4(len(player.hand), screen, background, card_scale, boundary_offset, bottom_offset)
+        draw_player_4(len(player.hand), screen, background, card_scale, boundary_offset, bottom_offset, time_delay)
         
         
 
 
-def draw_user(player, screen, background, card_scale, boundary_offset, bottom_offset, selected_card_index, raised):
+def draw_user(player, screen, background, card_scale, boundary_offset, bottom_offset, selected_card_index, time_delay, raised):
     '''Draws the hand of the user in the user's position in the table(bottom)'''
-    player_rect = get_area_of_player(1)
-    pygame.display.update(screen.blit(background, player_rect, area = player_rect))
     #################################IF there is no card, returns##################################
     if len(player.hand) == 0:
         return
@@ -62,17 +59,16 @@ def draw_user(player, screen, background, card_scale, boundary_offset, bottom_of
     ################################################################################################
     for card, index in zip(images, xrange(len(images))):
         rect = screen.blit(card, (x, y)) if index is not selected_card_index else screen.blit(card, (x, y - 8))
+        pygame.display.update(rect)
         loc.append(rect)
         x += x_increment
+        pygame.time.delay(time_delay)
     ###########################Updating Display and replacing list of rects of user#################
-    pygame.display.update(loc)
     player.loc = loc
     
     
     
-def draw_player_2(number_of_cards, screen, background, card_scale, boundary_offset, bottom_offset):
-    player_rect = get_area_of_player(2)
-    pygame.display.update(screen.blit(background, player_rect.topleft, area = player_rect))
+def draw_player_2(number_of_cards, screen, background, card_scale, boundary_offset, bottom_offset, time_delay):
     ####################################Loading image###############################################
     screen_size = screen.get_rect().size
     card = load_image(card_files()['back - side'])
@@ -91,12 +87,11 @@ def draw_player_2(number_of_cards, screen, background, card_scale, boundary_offs
     for _ in xrange(number_of_cards):
         pygame.display.update(screen.blit(card, (x, y)))
         y += y_increment
+        pygame.time.delay(time_delay)
         
 
 
-def draw_player_3(number_of_cards, screen, background, card_scale, boundary_offset, bottom_offset):
-    player_rect = get_area_of_player(3)
-    pygame.display.update(screen.blit(background, player_rect.topleft, area = player_rect))
+def draw_player_3(number_of_cards, screen, background, card_scale, boundary_offset, bottom_offset, time_delay):
     ####################################### Loading Card Image #####################################
     screen_size = screen.get_rect().size
     card = load_image(card_files()['back - up'])
@@ -115,11 +110,10 @@ def draw_player_3(number_of_cards, screen, background, card_scale, boundary_offs
     for _ in xrange(number_of_cards):
         pygame.display.update(screen.blit(card, (x, y)))
         x += x_increment
+        pygame.time.delay(time_delay)
         
         
-def draw_player_4(number_of_cards, screen, background, card_scale, boundary_offset, bottom_offset):
-    player_rect = get_area_of_player(4)
-    pygame.display.update(screen.blit(background, player_rect.topleft, area = player_rect))
+def draw_player_4(number_of_cards, screen, background, card_scale, boundary_offset, bottom_offset, time_delay):
     #####################################Loading Card Image##########################################
     screen_size = screen.get_rect().size
     card = load_image(card_files()['back - side'])
@@ -138,3 +132,4 @@ def draw_player_4(number_of_cards, screen, background, card_scale, boundary_offs
     for _ in xrange(number_of_cards):    
         pygame.display.update(screen.blit(card, (x, y)))
         y += y_increment
+        pygame.time.delay(time_delay)

@@ -7,6 +7,7 @@ If a card is clicked once, it is moved up by a few pixels. If it is clicked agai
 import pygame
 from display_engine.draw_selected_cards_module import draw_selected_card
 from display_engine.draw_players import draw_player
+from display_engine.blit import static
 
 def select_a_card(player, screen, background):
     '''
@@ -31,6 +32,7 @@ def user_animation(user, screen, background, pos, clicked):
             if clicked is index:                 # True if the card has been clicked before
                 return True, index
             elif clicked is not index:           # If not clicked before, calls animation method and sets clicked index
+                static.erase_hand(user.index, screen, background)
                 draw_player(user, screen, background, index, True)
                 clicked = index
                 break
