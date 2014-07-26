@@ -18,3 +18,5 @@ class Card():
         
     def __repr__(self):
         return "%s - %s" %(self.suit, self.character)
+
+        

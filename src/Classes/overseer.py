@@ -13,6 +13,7 @@ from display_engine import menu_module, deal_module, reset_display, draw_players
 from Initiate.cardStack import shuffle_deck, split_deck
 from display_engine.draw_players import draw_player
 from display_engine.blit import static, dynamic
+from Classes.character_Attribute import hand_analyser
 
 
 class overseer():
@@ -59,7 +60,11 @@ class overseer():
         
     def bidding(self):
         # TODO: Implement bidding
-        pass
+        for player in self.players:
+            if player.index != 1:
+                x = hand_analyser(player.hand)
+                x.hand_strength()
+        return 0
     
     def init_players(self):
         # Creates Players
@@ -70,6 +75,7 @@ class overseer():
         return menu_module.menu_screen(self.images)
     
     def play_one_turn(self):
+       
         for player in self.players:
             if player.index is not 1: 
                 self.turn.append(player.choose_card(self.turn))
