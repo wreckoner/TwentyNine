@@ -49,31 +49,31 @@ class hand_analyser():
 #     
 #     
     def hand_strength(self):
-         suit=[]
-         calculation=0
-         trump_order=[]
-         trump=''
-         for i in range(4):
-              suit.append(str(self.hand[i]).split(' - '))
-         print suit
+        suit=[]
+        calculation=0
+        trump_order=[]
+        trump=''
+        for i in range(4):
+            suit.append(str(self.hand[i]).split(' - '))
+        print suit
 #          print sum(x.count(suit[0][0]) for x in suit)
 #          print hand_analyser.cons[suit[0][1]]
-         for i in range(4):
+        for i in range(4):
 #              print (hand_analyser.cons[suit[i][1]]*sum(x.count(suit[i][0]) for x in suit))
-             calculation+=(hand_analyser.cons[suit[i][1]]*sum(x.count(suit[i][0]) for x in suit))
-             trump_order.append([sum(x.count(suit[i][0]) for x in suit),hand_analyser.cons[suit[i][1]]])
-         trump_order.sort()
-         for i in range(4):
-             if trump_order[3][0]==sum(x.count(suit[i][0]) for x in suit) and trump_order[3][1]== hand_analyser.cons[suit[i][1]] :
-                   trump=suit[i][0]
-                   print trump
-                   break
+            calculation+=(hand_analyser.cons[suit[i][1]]*sum(x.count(suit[i][0]) for x in suit))
+            trump_order.append([sum(x.count(suit[i][0]) for x in suit),hand_analyser.cons[suit[i][1]]])
+        trump_order.sort()
+        for i in range(4):
+            if trump_order[3][0]==sum(x.count(suit[i][0]) for x in suit) and trump_order[3][1]== hand_analyser.cons[suit[i][1]] :
+                trump=suit[i][0]
+                print trump
+                break
 #          print calculation
 #          print(15+int(round(calculation/2.615)))
-         result=[15+int(round(calculation/2.615)),trump] 
-         print result
-         print '------------------------------k'
-         return result
+        result=[15+int(round(calculation/2.615)),trump] 
+        print result
+        print '------------------------------k'
+        return result
     
     
     def aggression(self):
