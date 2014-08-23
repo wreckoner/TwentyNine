@@ -12,6 +12,8 @@ from display_engine import menu_module, deal_module, reset_display, draw_players
 from Initiate.cardStack import shuffle_deck, split_deck
 from display_engine.draw_players import draw_player
 from display_engine.blit import static, dynamic
+import thread
+import threading
 
 
 class overseer():
@@ -57,8 +59,9 @@ class overseer():
             draw_player(player, self.images['screen'], self.images['background'], time_delay = 50)
         
     def bidding(self):
-        # TODO: Implement bidding
-        bidding_module.bidding(self.players)
+        t = threading.Thread(target = bidding_module.bidding, args=(self.players, ))
+        t.start()
+        t.join()
     
     def init_players(self):
         # Creates Players
