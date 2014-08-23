@@ -20,14 +20,13 @@ class ComputerPlayerClass():
     def __repr__(self):
         return "CPU %s" %self.index
     
-    def MakeBid(self):
-        choices = range(16,24) + [False for _ in range(1,8)]
-        while True:
-            bid = random.choice(choices)
-            if len(self.parent.bids) != 0 and bid and bid <= max(self.parent.bids): bid = random.choice([False, bid + 1])
-            else: break
-        print "%s bid : %s" %(self, bid if bid is not False else "pass")
-        return bid
+    def make_bid(self, max_bid):
+        '''Bidding function of the player. This is a randomised bid function used for testing.'''
+        choices = range(max_bid + 1, 24) + [False for _ in xrange(1,8)]
+        bid = random.choice(choices)
+        trump = random.choice(["spades", "hearts", "clubs", "diamonds"])
+        return bid, trump
+        
     
     def SelectTrump(self):
         temp = [["diamonds", 0], ["spades", 0], ["hearts", 0], ["clubs", 0]]

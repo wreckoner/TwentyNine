@@ -8,7 +8,7 @@ from display_engine.methods import load_image
 from Classes.humanPlayer import HumanPlayerClass
 from Classes.computerPlayer import ComputerPlayerClass
 from display_engine import menu_module, deal_module, reset_display, draw_players,\
-    draw_selected_cards_module, select_card_module
+    draw_selected_cards_module, select_card_module, bidding_module
 from Initiate.cardStack import shuffle_deck, split_deck
 from display_engine.draw_players import draw_player
 from display_engine.blit import static, dynamic
@@ -58,7 +58,7 @@ class overseer():
         
     def bidding(self):
         # TODO: Implement bidding
-        pass
+        bidding_module.bidding(self.players)
     
     def init_players(self):
         # Creates Players
