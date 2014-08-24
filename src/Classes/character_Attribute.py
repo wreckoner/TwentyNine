@@ -6,6 +6,7 @@ Created on Jul 25, 2014
 from string import count
 from lib2to3.fixer_util import String
 import math
+from random import random, randint
 """ 
  1.hand_strength
 
@@ -72,25 +73,38 @@ class hand_analyser():
                 break
 #          print calculation
 #          print(15+int(round(calculation/2.615)))
-        result=[15+int(round(calculation/2.615)),trump] 
+        final_bid=15+int(round(calculation/2.615))
+        
+        result=[final_bid,trump] 
         print result
         print '------------------------------k'
         return result
     
     
     def aggression(self):
-        return 0
-    
-    
-    
-    def defense(self):
-        return 0
+        
+        return randint(-2,2)
     
     
     
     def double(self):
+        chances_of_double=[0,0,0,0,0,0,0,0]
+        suit=[]
+        for i in range(4):
+            suit.append(str(self.hand[i]).split(' - '))
+        if sum(x.count('J') for x in suit)==2:
+            chances_of_double=[1,1,1,1,1,0,0,0]
+            reduction=-1
+        if sum(x.count('J') for x in suit)==3:
+            chances_of_double=[1,1,1,1,1,1,1,0]
+            reduction=-1
+        
+        
         return 0   
 
+
+    def set_condition(self):
+        return 0
 
 
     def partner_call(self):
