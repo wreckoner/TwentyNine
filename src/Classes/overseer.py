@@ -62,7 +62,7 @@ class overseer():
         # TODO: Implement bidding
         for player in self.players:
             if player.index != 1:
-                x = hand_analyser(player.hand)
+                x = hand_analyser(player.hand,player.index)
                 x.hand_strength()
         return 0
     

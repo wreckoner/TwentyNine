@@ -25,8 +25,9 @@ import math
 
 class hand_analyser():
     
-    def __init__(self,hand):
+    def __init__(self,hand,index):
         self.hand = hand
+        self.index=index
 #     
 #     initial_value=15   # dak suru hoy 16 theke
 #     
@@ -53,6 +54,7 @@ class hand_analyser():
         calculation=0
         trump_order=[]
         trump=''
+        print self.index
         for i in range(4):
             suit.append(str(self.hand[i]).split(' - '))
         print suit
