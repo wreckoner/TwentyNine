@@ -59,9 +59,7 @@ class overseer():
             draw_player(player, self.images['screen'], self.images['background'], time_delay = 50)
         
     def bidding(self):
-        t = threading.Thread(target = bidding_module.bidding, args=(self.players, ))
-        t.start()
-        t.join()
+        bidding_module.bidding(self.players)
     
     def init_players(self):
         # Creates Players
