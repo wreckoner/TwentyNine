@@ -4,53 +4,56 @@ Created on Aug 22, 2014
 Contains display implementation of a bidding mechanism. (Not the bidding algorithm.)
 '''
 
-import pygame
-import copy
-import sys
-import display_engine
+import pygame, copy, sys, display_engine
 
 def bidding(players):
-    screen = pygame.display.get_surface()                                       # Gets a reference to the display surface
-    screen_backup = pygame.Surface.copy(screen)                                 # Creates a backup of display surface
+    '''Function to implement bidding by the players.'''
+    screen = pygame.display.get_surface()                                       
+    # Get a reference to the display surface
+    screen_backup = pygame.Surface.copy(screen)                                 
+    # Create a backup of original screen
     font = pygame.font.SysFont("mvboli", 50, 1, 0)
-    max_bid = 16
+    max_bid = 15
     players = tuple(copy.copy(players))
     while len(players) > 1:
-        passed = []      # A list of flags used to check which players have passed.
+        passed = []      # A list of flags used to check which players have passed. Set to True if a player passes the bid
         for player in players:
             if player.index is 1:
-                #message = font.render('State your bid:', 1, (255, 0, 0), (255, 255, 255))
-                user_bidding(screen, font, max_bid)
-                passed.append(False)
+                bid, trump = user_bidding(screen, font, max_bid, player)
+                pygame.display.update(screen.blit(screen_backup, (0, 0)))
+                if not bid:
+                    message = font.render('You passed', 1, (0, 255, 255))
+                    passed.append(True)
+                else:
+                    max_bid = bid
+                    max_bidder = player
+                    message = font.render('You bid %s.\n You selected %s as trump'%(bid, trump), 1, (0, 255, 255))
             else:
                 bid, trump = player.make_bid(max_bid)
                 if bid:
                     max_bid = bid
                     max_bidder = player
-                    trump = trump
                     message = font.render('player %s has bid %s'%(player.index, bid), 1, (0, 255, 255))
                     passed.append(False)
                 else:
                     message = font.render('player %s has passed'%player.index, 1, (0, 255, 255))
                     passed.append(True)
-                pos = message.get_rect()
-                pos.center = screen.get_rect().center
-                pygame.display.update(screen.blit(message, pos))
+            pos = message.get_rect()
+            pos.center = screen.get_rect().center
+            pygame.display.update(screen.blit(message, pos))
             pygame.time.delay(2000)
             pygame.display.update(screen.blit(screen_backup, (0, 0)))
-            print passed
         players = [player for player, flag in zip(players, passed) if not flag]
-        print players
-        
         
     return max_bid, trump, max_bidder
                 
 
-def user_bidding(screen, font, max_bid):
+def user_bidding(screen, font, max_bid, player):
+    # Backup the original screen
+    screen_original = pygame.Surface.copy(screen)
     # Create message surfaces
     text = font.render('State your bid:', 1, (0, 255, 255))
     message = pygame.Surface((text.get_rect().w, text.get_rect().h * 2), pygame.SRCALPHA, 32).convert_alpha()
-    #message.fill((255, 255, 255))
     message.blit(text, (0, 0))
     pos = message.get_rect()
     pos.center = screen.get_rect().center
@@ -99,28 +102,51 @@ def user_bidding(screen, font, max_bid):
     # Update display
     pygame.display.update(rect)
     # Wait for input event from user to receive the bid.
-    while True:
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type is pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 if rect_plus.collidepoint(pos) and bid < 28:
-                    # When user clicks >
+                    # When user clicks '>'
                     bid += 1
                     number = font.render('%s'%bid, 1, (0, 255, 255))
                     screen.blit(screen_backup, (0, 0))
                     screen.blit(number, number_rect)
                     pygame.display.update(rect)
                 elif rect_minus.collidepoint(pos) and bid > max_bid + 1:
-                    # When user clicks <
+                    # When user clicks '<'
                     bid -= 1
                     number = font.render('%s'%bid, 1, (0, 255, 255))
                     screen.blit(screen_backup, (0, 0))
                     screen.blit(number, number_rect)
                     pygame.display.update(rect)
                 elif rect_submit.collidepoint(pos):
-                    print 'you pressed bid'
+                    # When user clicks 'BID'
+                    pygame.display.update(screen.blit(screen_original, (0, 0)))
+                    trump = select_trump(screen, font, player.hand, player.loc)
+                    running = False
                 elif rect_cease.collidepoint(pos):
-                    print 'you pressed pass'
+                    # When user clicks 'PASS'
+                    bid, trump = False, None
+                    running = False
             elif event.type == pygame.QUIT:
+                # When user clicks 'CLOSE' button
+                running = False
                 sys.exit()
-    return bid
+    return bid, trump
+
+def select_trump(screen, font, hand, loc):
+    message = font.render('Select Trump', 1, (0, 255, 255))
+    rect = message.get_rect()
+    rect.center = screen.get_rect().center
+    pygame.display.update(screen.blit(message, rect))
+    while True:
+        for event in pygame.event.get():
+            if event.type is pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                for card, loc in zip(hand[::-1], loc[::-1]):
+                    if loc.collidepoint(pos):
+                        return card.suit
+            elif event.type is pygame.QUIT:
+                sys.exit()
