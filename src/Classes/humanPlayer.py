@@ -2,6 +2,7 @@
 Created on Jun 11, 2014
 @author: Dibyendu
 '''
+from display_engine import bidding_module
 
 class HumanPlayerClass():
     '''
@@ -19,18 +20,12 @@ class HumanPlayerClass():
     def __repr__(self):
         return "Human %s" %self.index
     
-    def MakeBid(self):
-        print "Your hand is :",self.hand
-        bid = raw_input("Enter a bid greater than any previous bid with a minimum of 16, or press return to pass to the next user : ")
-        if bid.isdigit():
-            return int(bid)
-        else:
-            return False
+    def make_bid(self, max_bid):
+        return bidding_module.user_bidding(self, max_bid)
     
-    def SelectTrump(self):
-        suits = ["clubs", "diamonds", "hearts", "spades"]
-        index = raw_input("%s. Enter the index of the suit you want to select as trump : "%(suits))
-        self.parent.trump = suits[int(index)]
+    def select_trump(self):
+        self.trump = bidding_module.select_trump_by_user(self)
+        return self.trump
     
     def choose_card(self):
         # redundant method in graphic game, since card selection is done graphically.

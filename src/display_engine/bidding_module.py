@@ -1,7 +1,7 @@
 '''
 Created on Aug 22, 2014
 @author: Dibyendu, Dipayan
-Contains display implementation of a bidding mechanism. (Not the bidding algorithm.)
+Contains display implementation of a bidding mechanism. (Not the bidding algorithms of the AI.)
 '''
 
 import pygame, copy, sys, display_engine
@@ -18,37 +18,33 @@ def bidding(players):
     while len(players) > 1:
         passed = []      # A list of flags used to check which players have passed. Set to True if a player passes the bid
         for player in players:
-            if player.index is 1:
-                bid, trump = user_bidding(screen, font, max_bid, player)
-                pygame.display.update(screen.blit(screen_backup, (0, 0)))
-                if not bid:
-                    message = font.render('You passed', 1, (0, 255, 255))
-                    passed.append(True)
-                else:
-                    max_bid = bid
-                    max_bidder = player
-                    message = font.render('You bid %s.\n You selected %s as trump'%(bid, trump), 1, (0, 255, 255))
+            bid = player.make_bid(max_bid)
+            pygame.display.update(screen.blit(screen_backup, (0, 0)))
+            if bid:
+                max_bid = bid
+                max_bidder = player
+                message = font.render('player %s has bid %s'%(player.index, bid), 1, (0, 255, 255))
+                passed.append(False)
             else:
-                bid, trump = player.make_bid(max_bid)
-                if bid:
-                    max_bid = bid
-                    max_bidder = player
-                    message = font.render('player %s has bid %s'%(player.index, bid), 1, (0, 255, 255))
-                    passed.append(False)
-                else:
-                    message = font.render('player %s has passed'%player.index, 1, (0, 255, 255))
-                    passed.append(True)
+                message = font.render('player %s has passed'%player.index, 1, (0, 255, 255))
+                passed.append(True)
             pos = message.get_rect()
             pos.center = screen.get_rect().center
             pygame.display.update(screen.blit(message, pos))
             pygame.time.delay(2000)
             pygame.display.update(screen.blit(screen_backup, (0, 0)))
         players = [player for player, flag in zip(players, passed) if not flag]
-        
+    trump = max_bidder.select_trump()
     return max_bid, trump, max_bidder
-                
 
-def user_bidding(screen, font, max_bid, player):
+
+
+def user_bidding(player, max_bid):
+    ''' Function asks the user to enter or pass bid.
+        Called by the make_bid(self, max_bid) function of humanPlayer class'''
+    screen = pygame.display.get_surface()
+    font = pygame.font.SysFont("mvboli", 50, 1, 0)
+    ''' This bidding function is used to receive bid from the user.'''
     # Backup the original screen
     screen_original = pygame.Surface.copy(screen)
     # Create message surfaces
@@ -124,29 +120,37 @@ def user_bidding(screen, font, max_bid, player):
                 elif rect_submit.collidepoint(pos):
                     # When user clicks 'BID'
                     pygame.display.update(screen.blit(screen_original, (0, 0)))
-                    trump = select_trump(screen, font, player.hand, player.loc)
                     running = False
                 elif rect_cease.collidepoint(pos):
                     # When user clicks 'PASS'
-                    bid, trump = False, None
+                    bid  = False
                     running = False
             elif event.type == pygame.QUIT:
                 # When user clicks 'CLOSE' button
                 running = False
                 sys.exit()
-    return bid, trump
+    return bid
 
-def select_trump(screen, font, hand, loc):
+
+def select_trump_by_user(player):
+    '''This function asks the user to select a card from his hand for the trump.
+       Takes a reference to the screen, font, user's hand and user's card loc as arguements'''
+    screen = pygame.display.get_surface()
+    font = pygame.font.SysFont('mvboli', 50, 1, 0)
+    hand, loc = player.hand, player.loc
     message = font.render('Select Trump', 1, (0, 255, 255))
     rect = message.get_rect()
     rect.center = screen.get_rect().center
     pygame.display.update(screen.blit(message, rect))
-    while True:
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type is pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 for card, loc in zip(hand[::-1], loc[::-1]):
                     if loc.collidepoint(pos):
-                        return card.suit
+                        trump = card.suit
+                        running = False
             elif event.type is pygame.QUIT:
                 sys.exit()
+    return trump

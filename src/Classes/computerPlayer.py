@@ -3,7 +3,7 @@ Created on Jun 11, 2014
 @author: Dibyendu
 '''
 from game_play import decisionLogic
-import random
+import random, collections
 
 
 class ComputerPlayerClass():
@@ -24,25 +24,15 @@ class ComputerPlayerClass():
         '''Bidding function of the player. This is a randomised bid function used for testing.'''
         choices = range(max_bid + 1, 24) + [False for _ in xrange(1,8)]
         bid = random.choice(choices)
-        trump = random.choice(["spades", "hearts", "clubs", "diamonds"])
-        return bid, trump
+        return bid
         
     
-    def SelectTrump(self):
-        temp = [["diamonds", 0], ["spades", 0], ["hearts", 0], ["clubs", 0]]
-        for card in self.hand:
-            if card.suit is temp[0][0]:
-                temp[0][1] += 1
-            elif card.suit is temp[1][0]:
-                temp[1][1] += 1
-            elif card.suit is temp[2][0]:
-                temp[2][1] += 1
-            else:
-                temp[3][1] += 1
-            self.parent.trump = max(temp)[0]
+    def select_trump(self):
+        self.trump = collections.Counter([card.suit for card in self.hand]).most_common(1)[0][0]
+        return self.trump
             
     def choose_card(self, turn_cards):
-        # Chooses a card from its hand.
+        '''Chooses a card from its hand.'''
         choice = decisionLogic.random_card_select(self, turn_cards)
         print "%s played %s" %(self.__repr__(), choice)
         return choice

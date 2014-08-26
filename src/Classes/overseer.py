@@ -12,8 +12,6 @@ from display_engine import menu_module, deal_module, reset_display, draw_players
 from Initiate.cardStack import shuffle_deck, split_deck
 from display_engine.draw_players import draw_player
 from display_engine.blit import static, dynamic
-import thread
-import threading
 
 
 class overseer():
@@ -28,6 +26,10 @@ class overseer():
         self.status = 'start'               # Event condition
         self.cards = []                     # List of cards
         self.turn = []                      # List of cards played in a round
+        self.trump = None                   # The suit of trump is stored here
+        self.max_bidder = None              # Stores reference to the highest bidder
+        self.bid = 0                        # Bid for current round
+        self.trump_shown                    # Flag used to keep track if bid has been shown or not
     
     def display_init(self):
         pygame.init()
@@ -59,7 +61,7 @@ class overseer():
             draw_player(player, self.images['screen'], self.images['background'], time_delay = 50)
         
     def bidding(self):
-        bidding_module.bidding(self.players)
+        self.bid, self.trump, self.max_bidder = bidding_module.bidding(self.players)
     
     def init_players(self):
         # Creates Players
