@@ -2,14 +2,14 @@
 Created on Jun 11, 2014
 @author: Dibyendu
 '''
-from display_engine import bidding_module
+from display_engine import bidding_module, select_card_module
 
 class HumanPlayerClass():
     '''
     This is a Human player class. Takes a list of cards as parameter
     '''
-    def __init__(self, hand, index, parent):
-        self.hand = hand
+    def __init__(self, parent, index):
+        self.hand = []
         self.parent = parent
         self.index = index
         self.trump = False
@@ -27,13 +27,11 @@ class HumanPlayerClass():
         self.trump = bidding_module.select_trump_by_user(self)
         return self.trump
     
-    def choose_card(self):
-        # redundant method in graphic game, since card selection is done graphically.
-        choice = self.hand[self.selected_card_index]
-        self.parent.played_turn.append(choice)
-        self.hand.remove(choice)
-        print 'you played', choice
-        self.selected_card_index, self.clicked = 8, 8
+    def choose_card(self, turn_cards):
+        '''Calls the select card function of select_a_card module. 
+        turn_cards is not really needed. Used to resemble the function signature of computerPlayer class'''
+        index = select_card_module.select_a_card(self, self.parent.images['background'])
+        return self.hand.pop(index)
         
     def sort_hand(self):
         self.hand = sorted(self.hand, key = lambda x : (x.sort_key, x.priority ))

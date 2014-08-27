@@ -7,7 +7,6 @@ Menu module: A simple title screen with animation. Returns if Enter is pressed.
 import random, pygame
 from display_engine.image_files import card_files
 from display_engine.methods import load_image
-import sys
 
 def menu_screen(image_dict):
     screen = image_dict['screen']
@@ -42,4 +41,4 @@ def menu_screen(image_dict):
             elif event.type is pygame.KEYDOWN and event.key is pygame.K_ESCAPE: 
                 return False
             elif event.type is pygame.QUIT:
-                sys.exit()
+                return False

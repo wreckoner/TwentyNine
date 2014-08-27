@@ -5,15 +5,15 @@ This module contains methods to animate user's interaction with his/her cards. S
 If a card is clicked once, it is moved up by a few pixels. If it is clicked again it is played. If it is right clicked or if some other area is card is clicked that is selected.
 '''
 import pygame, sys
-from display_engine.draw_selected_cards_module import draw_selected_card
 from display_engine.draw_players import draw_player
 from display_engine.blit import static
 
-def select_a_card(player, screen, background):
+def select_a_card(player, background):
     '''
     This method sets up an event handler for handling the selection of card by the user
     for playing.
     '''
+    screen = pygame.display.get_surface()
     index = 8
     running = True
     flag = False

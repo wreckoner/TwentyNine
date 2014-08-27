@@ -8,11 +8,12 @@ import pygame, copy, sys, display_engine
 
 def bidding(players):
     '''Function to implement bidding by the players.'''
+    time_delay = 1000           # Time in milliseconds between bids by cpu
     screen = pygame.display.get_surface()                                       
     # Get a reference to the display surface
     screen_backup = pygame.Surface.copy(screen)                                 
     # Create a backup of original screen
-    font = pygame.font.SysFont("mvboli", 50, 1, 0)
+    font = pygame.font.SysFont("rockwell extra", 50, 1, 0)
     max_bid = 15
     players = tuple(copy.copy(players))
     while len(players) > 1:
@@ -23,15 +24,15 @@ def bidding(players):
             if bid:
                 max_bid = bid
                 max_bidder = player
-                message = font.render('player %s has bid %s'%(player.index, bid), 1, (0, 255, 255))
+                message = font.render('player %s has bid %s'%(player.index, bid), 1, (136, 255, 0))
                 passed.append(False)
             else:
-                message = font.render('player %s has passed'%player.index, 1, (0, 255, 255))
+                message = font.render('player %s has passed'%player.index, 1, (136, 255, 0))
                 passed.append(True)
             pos = message.get_rect()
             pos.center = screen.get_rect().center
             pygame.display.update(screen.blit(message, pos))
-            pygame.time.delay(2000)
+            pygame.time.delay(time_delay)
             pygame.display.update(screen.blit(screen_backup, (0, 0)))
         players = [player for player, flag in zip(players, passed) if not flag]
     trump = max_bidder.select_trump()
@@ -42,33 +43,32 @@ def bidding(players):
 def user_bidding(player, max_bid):
     ''' Function asks the user to enter or pass bid.
         Called by the make_bid(self, max_bid) function of humanPlayer class'''
+    # Initialize, load resources
     screen = pygame.display.get_surface()
-    font = pygame.font.SysFont("mvboli", 50, 1, 0)
-    ''' This bidding function is used to receive bid from the user.'''
+    font = pygame.font.SysFont("rockwell extra", 50, 1, 0)
+    message_src = display_engine.methods.load_image('messages.png', ['images'], 1)
     # Backup the original screen
     screen_original = pygame.Surface.copy(screen)
     # Create message surfaces
-    text = font.render('State your bid:', 1, (0, 255, 255))
-    message = pygame.Surface((text.get_rect().w, text.get_rect().h * 2), pygame.SRCALPHA, 32).convert_alpha()
+    text = pygame.Surface((520, 50), pygame.SRCALPHA, 32).convert_alpha()
+    text.blit(message_src, (0, 0), (6, 14, 520, 48))
+    message = pygame.Surface((text.get_rect().w, text.get_rect().h * 3), pygame.SRCALPHA, 32).convert_alpha()
     message.blit(text, (0, 0))
     pos = message.get_rect()
     pos.center = screen.get_rect().center
     rect = screen.blit(message, pos)
     # Loading buttons
-    buttons = display_engine.methods.load_image('bid_buttons.png', ['images'], 1)
-    plus = pygame.Surface((75, 75), pygame.SRCALPHA, 32).convert_alpha()
-    plus.blit(buttons, (0, 0), (115, 5, 65, 70))
-    plus = pygame.transform.rotozoom(plus, 0, 0.6)
-    minus = pygame.Surface((75, 75), pygame.SRCALPHA, 32).convert_alpha()
-    minus.blit(buttons, (0, 0), (0, 5, 65, 70))
-    minus = pygame.transform.rotozoom(minus, 0, 0.6)
-    submit = pygame.Surface((75, 40), pygame.SRCALPHA, 32).convert_alpha()
-    submit.blit(buttons, (0, 0), (0, 110, 75, 40))
-    cease = pygame.Surface((100, 45), pygame.SRCALPHA, 32).convert_alpha()
-    cease.blit(buttons, (0, 0), (80, 101, 100, 45))
+    plus = pygame.Surface((45, 41), pygame.SRCALPHA, 32).convert_alpha()
+    plus.blit(message_src, (0, 0), (370, 370, 45, 41))
+    minus = pygame.Surface((45, 41), pygame.SRCALPHA, 32).convert_alpha()
+    minus.blit(message_src, (0, 0), (288, 370, 45, 41))
+    submit = pygame.Surface((123, 55), pygame.SRCALPHA, 32).convert_alpha()
+    submit.blit(message_src, (0, 0), (5, 69, 123, 55))
+    submit = pygame.transform.rotozoom(submit, 0, 0.8)
+    cease = pygame.Surface((154, 55), pygame.SRCALPHA, 32).convert_alpha()
+    cease.blit(message_src, (0, 0), (166, 69, 154, 45))
+    cease = pygame.transform.rotozoom(cease, 0, 0.8)
     # Blit Plus and Minus buttons
-    #plus = font.render('+', 1, (255, 0, 0))
-    #minus = font.render('-', 1, (255, 0, 0))
     rect_minus = minus.get_rect()
     rect_minus.center = rect.topleft
     rect_minus = rect_minus.move(message.get_rect().w/3, message.get_rect().h*2/3)
@@ -78,8 +78,6 @@ def user_bidding(player, max_bid):
     rect_plus = rect_plus.move(message.get_rect().w*2/3, message.get_rect().h*2/3)
     screen.blit(plus, rect_plus)
     # Blit buttons
-    #submit = font.render('Bid', 1, (255, 0, 0))
-    #cease = font.render('Pass', 1, (255, 0, 0))
     rect_submit = submit.get_rect()
     rect_submit.bottomleft = rect.bottomleft
     screen.blit(submit, rect_submit)
@@ -90,7 +88,7 @@ def user_bidding(player, max_bid):
     screen_backup = pygame.Surface.copy(screen)
     # Blit number
     bid = max_bid + 1
-    number = font.render('%s'%bid, 1, (0, 255, 255))
+    number = font.render('%s'%bid, 1, (136, 255, 0))
     number_rect = number.get_rect()
     number_rect.center = rect.topleft
     number_rect = number_rect.move(message.get_rect().w/2, message.get_rect().h*2/3)
@@ -106,14 +104,14 @@ def user_bidding(player, max_bid):
                 if rect_plus.collidepoint(pos) and bid < 28:
                     # When user clicks '>'
                     bid += 1
-                    number = font.render('%s'%bid, 1, (0, 255, 255))
+                    number = font.render('%s'%bid, 1, (136, 255, 0))
                     screen.blit(screen_backup, (0, 0))
                     screen.blit(number, number_rect)
                     pygame.display.update(rect)
                 elif rect_minus.collidepoint(pos) and bid > max_bid + 1:
                     # When user clicks '<'
                     bid -= 1
-                    number = font.render('%s'%bid, 1, (0, 255, 255))
+                    number = font.render('%s'%bid, 1, (136, 255, 0))
                     screen.blit(screen_backup, (0, 0))
                     screen.blit(number, number_rect)
                     pygame.display.update(rect)
@@ -136,21 +134,56 @@ def select_trump_by_user(player):
     '''This function asks the user to select a card from his hand for the trump.
        Takes a reference to the screen, font, user's hand and user's card loc as arguements'''
     screen = pygame.display.get_surface()
-    font = pygame.font.SysFont('mvboli', 50, 1, 0)
-    hand, loc = player.hand, player.loc
-    message = font.render('Select Trump', 1, (0, 255, 255))
+    screen_backup = pygame.Surface.copy(screen)
+    message_src = display_engine.methods.load_image('messages.png', ['images'], 1)
+    message = pygame.Surface((537, 50), pygame.SRCALPHA, 32).convert_alpha()
+    message.blit(message_src, (0, 0), (8, 131, 537, 50))
     rect = message.get_rect()
     rect.center = screen.get_rect().center
     pygame.display.update(screen.blit(message, rect))
+    
+    suits = {}
+    
+    suits['spades'] = pygame.Surface((50, 50), pygame.SRCALPHA, 32).convert_alpha()
+    suits['spades'].blit(message_src, (0, 0), (421, 357, 50, 50))
+    suits['hearts'] = pygame.Surface((50, 50), pygame.SRCALPHA, 32).convert_alpha()
+    suits['hearts'].blit(message_src, (0, 0), (477, 357, 50, 50))
+    suits['diamonds'] = pygame.Surface((50, 50), pygame.SRCALPHA, 32).convert_alpha()
+    suits['diamonds'].blit(message_src, (0, 0), (535, 357, 50, 50))
+    suits['clubs'] = pygame.Surface((50, 50), pygame.SRCALPHA, 32).convert_alpha()
+    suits['clubs'].blit(message_src, (0, 0), (591, 357, 50, 50))
+    
+    message_2 = pygame.Surface((440, 48), pygame.SRCALPHA, 32).convert_alpha()
+    message_2.blit(message_src, (0, 0), (5, 419, 440, 48))
+    accept = pygame.Surface((245, 48), pygame.SRCALPHA, 32).convert_alpha()
+    accept.blit(message_src, (0, 0), (450, 420, 245, 48))
+    rect_accept = pygame.Rect(-10, -10, 0, 0)
+    
+    hand, loc = player.hand, player.loc
+    
     running = True
     while running:
         for event in pygame.event.get():
             if event.type is pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                for card, loc in zip(hand[::-1], loc[::-1]):
-                    if loc.collidepoint(pos):
-                        trump = card.suit
-                        running = False
+                if rect_accept.collidepoint(pos):
+                    running = False
+                else:
+                    for card, point in zip(reversed(hand), reversed(loc)):
+                        if point.collidepoint(pos):
+                            trump = card.suit
+                            pygame.display.update(screen.blit(screen_backup, (0, 0)))
+                            rect = message_2.get_rect()
+                            rect.midbottom = screen.get_rect().center
+                            screen.blit(message_2, rect)
+                            rect_suit = suits[trump].get_rect()
+                            rect_suit.midtop = rect.midbottom
+                            screen.blit(suits[trump], rect_suit)
+                            rect_accept = accept.get_rect()
+                            rect_accept.midtop = rect_suit.midbottom
+                            screen.blit(accept, rect_accept)
+                            pygame.display.update((rect, rect_suit, rect_accept))
             elif event.type is pygame.QUIT:
                 sys.exit()
+    pygame.display.update(screen.blit(screen_backup, (0, 0)))
     return trump

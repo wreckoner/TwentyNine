@@ -10,8 +10,8 @@ class ComputerPlayerClass():
     '''
     This is a computer player class. Takes a hand of cards as parameter.
     '''
-    def __init__(self, hand, index, parent):
-        self.hand = hand
+    def __init__(self, parent, index):
+        self.hand = []
         self.parent = parent
         self.trump = False
         self.index = index
@@ -34,7 +34,7 @@ class ComputerPlayerClass():
     def choose_card(self, turn_cards):
         '''Chooses a card from its hand.'''
         choice = decisionLogic.random_card_select(self, turn_cards)
-        print "%s played %s" %(self.__repr__(), choice)
+        self.hand.remove(choice)
         return choice
         
     def sort_hand(self):
