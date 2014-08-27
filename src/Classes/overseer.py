@@ -13,7 +13,7 @@ from display_engine import menu_module, deal_module, reset_display, draw_players
 from Initiate.cardStack import shuffle_deck, split_deck
 from display_engine.draw_players import draw_player
 from display_engine.blit import static, dynamic
-from Classes.character_Attribute import hand_analyser
+from random import randint
 
 
 class overseer():
@@ -62,8 +62,7 @@ class overseer():
         # TODO: Implement bidding
         for player in self.players:
             if player.index != 1:
-                x = hand_analyser(player.hand,player.index)
-                x.hand_strength()
+                self.hand_strength(player.hand,player.index,[2,3])
         return 0
     
     def init_players(self):
@@ -119,3 +118,76 @@ class overseer():
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     self.running = False
+                    
+    def hand_strength(self,hand,index,set_condition):
+        
+        cons= {'A': 1.5,
+               'K': 0.5, 
+               'Q': 0.5,
+               'J': 4,
+               '10':1,
+               '9': 2, 
+               '8': 0.5,
+               '7': 0.5}
+        
+        suit=[]         # suit is taken to process the strings of the incoming parameter hand. 
+        calculation=0   #total point calculation
+        trump_order=[]  
+        trump=''
+        print index
+        for i in range(4):              
+            suit.append(str(hand[i]).split(' - '))    # Here 'hand' is processed and ['spade - King'] is seperated into ['spade','King']
+        print suit
+        for i in range(4):
+            calculation+=(cons[suit[i][1]]*sum(x.count(suit[i][0]) for x in suit))      #here calculation is made by using the points chart from 'cons'
+            trump_order.append([sum(x.count(suit[i][0]) for x in suit),cons[suit[i][1]]])   #it is then ordered by highest suit(1st priority) and then by trump character
+        trump_order.sort()
+        for i in range(4):
+            if trump_order[3][0]==sum(x.count(suit[i][0]) for x in suit) and trump_order[3][1]== cons[suit[i][1]] : #TRUMP SELECTION----1st checking the highest suit in hand.
+                trump=suit[i][0]                                                                                    #(Spade,Spade,Spade,Heart) spade have 3 and hearts have 1.
+                print trump                                                                                         #(Spade,Spade,Heart,Heart) in this case their character value(from cons) 
+                break                                                                                               #will be checked.and if it is also same.then randomly
+
+
+
+        '''--------------------------------------Logics of Double-------------------------'''
+           
+           
+           
+        chances_of_double=20
+        for i in range(4):
+            chances_of_double+=cons[suit[i][1]]
+        chances_of_double=int(round(chances_of_double))
+#        print chances_of_double
+        our_set=0
+        opponent_set=1
+        change_in_bid=0
+       
+        jack_count=sum(x.count('J') for x in suit)
+        
+        
+        if jack_count>=2:
+            chances_of_double=(90+(jack_count)**2)
+            change_in_bid=randint(-2,-1)
+        
+        if set_condition[opponent_set] == 4:
+            chances_of_double-=50
+        elif set_condition[opponent_set] == 5:
+            chances_of_double+=100
+            change_in_bid=int( round( (set_condition[our_set]+set_condition[opponent_set])/2 ) )
+            change_in_bid=+randint(0,2)
+        
+#      return [chances_of_double,change_in_bid]   
+
+        '''--------------------------------------End of Logics of Double-------------------------'''
+
+
+        aggression=randint(-2,2)
+        final_bid=15+int(round(calculation/2.615))+aggression
+        
+        
+        
+        result=[final_bid,trump,chances_of_double] 
+        print result
+        print '------------------------------k'
+        return result

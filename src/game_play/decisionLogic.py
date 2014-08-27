@@ -3,7 +3,7 @@
 This module contains the decision logics of the computer players
 '''
 import random
-from Classes.character_Attribute import hand_analyser
+#from src.Classes.overseer import overseer
     
 # def random_card_select(cpu_player):
 #     if len(cpu_player.parent.previous_turn_cards) == 0:                     # Check to see if it is the first player
@@ -51,16 +51,17 @@ def random_card_select(player, turn_cards):
         
         
         
-        
+    '''    
         
 def make_bid(player, bid):
-    '''A bidding algorithm used by computer players, takes the player and maximum bid as parameters. Returns its bid and the trump.
-    If bid is lower than max_bid, returns Fasle, None'''
+    A bidding algorithm used by computer players, takes the player and maximum bid as parameters. Returns its bid and the trump.
+    If bid is lower than max_bid, returns Fasle, None
     
-    hand=hand_analyser(player.hand,player.index)
-    hand.hand_strength()
+    hand=overseer()
+    hand.hand_strength(player.hand,player.index,[2,3])
     max_bid=hand[0]
     if bid<max_bid:
         bid=False
         trump=None
     return bid, trump
+'''
