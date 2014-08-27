@@ -58,11 +58,8 @@ class overseer():
             draw_player(player, self.images['screen'], self.images['background'], time_delay = 50)
         if not self.bidding():
             # When all the players pass, cards are dealt again from the start
-            for player in self.players:
-                self.cards += player.hand
-                player.hand[:] = []
-                self.status = 'deal'
-                return
+            self.reset_state()
+            return
         for player in self.players:
             player.hand += [self.cards.pop(0) for _ in xrange(4)]
             player.sort_hand()
@@ -104,6 +101,20 @@ class overseer():
         static.blit_middle_deck(self.images['screen'], self.images['background'])
         dynamic.blit_hands(self.players, self.images['screen'], self.images['background'])
         static.blit_turn(self.turn, self.images['screen'], 1.3, 1)
+        
+    def reset_state(self):
+        '''Resets all the state variables of the game.
+           Similar to starting a new round. Would not reset scores'''
+        for player in self.players:
+            self.cards += player.hand
+            player.hand[:] = []
+        self.status = 'deal'
+        self.turn = []
+        self.bid = 0
+        self.max_bidder = None
+        self.trump = None
+        self.trump_shown = False
+            
     
     def run(self):
         while self.running:
@@ -123,7 +134,3 @@ class overseer():
             elif self.status is 'new round':
                 self.running = self.new_round()
                 self.status = 'deal'
-            for event in pygame.event.get():        
-                # Kind of meaningless to put this here. Since every event has a handler.
-                if event.type == pygame.QUIT:
-                    self.running = False
