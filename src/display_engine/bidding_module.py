@@ -35,7 +35,12 @@ def bidding(players):
             pygame.time.delay(time_delay)
             pygame.display.update(screen.blit(screen_backup, (0, 0)))
         players = [player for player, flag in zip(players, passed) if not flag]
-    trump = max_bidder.select_trump()
+    if max_bid is 15:
+        # If all the players pass
+        max_bid, trump, max_bidder = False, False, False
+        restart_deal_display()
+    else:
+        trump = max_bidder.select_trump()
     return max_bid, trump, max_bidder
 
 
@@ -175,15 +180,28 @@ def select_trump_by_user(player):
                             pygame.display.update(screen.blit(screen_backup, (0, 0)))
                             rect = message_2.get_rect()
                             rect.midbottom = screen.get_rect().center
-                            screen.blit(message_2, rect)
                             rect_suit = suits[trump].get_rect()
                             rect_suit.midtop = rect.midbottom
-                            screen.blit(suits[trump], rect_suit)
                             rect_accept = accept.get_rect()
                             rect_accept.midtop = rect_suit.midbottom
-                            screen.blit(accept, rect_accept)
-                            pygame.display.update((rect, rect_suit, rect_accept))
+                            pygame.display.update((screen.blit(message_2, rect), screen.blit(suits[trump], rect_suit), screen.blit(accept, rect_accept)))
             elif event.type is pygame.QUIT:
                 sys.exit()
     pygame.display.update(screen.blit(screen_backup, (0, 0)))
     return trump
+
+def restart_deal_display():
+    '''Called by bidding(max_bid) if all the players have passed
+       Informs the players that the cards are going to be dealt again.'''
+    screen = pygame.display.get_surface()
+    message_src = display_engine.methods.load_image('messages.png', ['images'], 1)
+    message = pygame.Surface((570, 55), pygame.SRCALPHA, 32).convert_alpha()
+    message.blit(message_src, (0, 0), (8, 473, 570, 55))
+    trail = pygame.Surface((484, 55), pygame.SRCALPHA, 32)
+    trail.blit(message_src, (0, 0), (8, 533, 484, 55))
+    rect = message.get_rect()
+    rect.center = screen.get_rect().center
+    rect_trail = trail.get_rect()
+    rect_trail.topleft = rect.bottomleft
+    pygame.display.update((screen.blit(message, rect), screen.blit(trail, rect_trail)))
+    pygame.time.delay(1500)

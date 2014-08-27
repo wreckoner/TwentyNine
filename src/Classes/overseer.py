@@ -56,7 +56,13 @@ class overseer():
             player.hand = [self.cards.pop(0) for _ in xrange(4)]
             player.sort_hand()
             draw_player(player, self.images['screen'], self.images['background'], time_delay = 50)
-        self.bidding()
+        if not self.bidding():
+            # When all the players pass, cards are dealt again from the start
+            for player in self.players:
+                self.cards += player.hand
+                player.hand[:] = []
+                self.status = 'deal'
+                return
         for player in self.players:
             player.hand += [self.cards.pop(0) for _ in xrange(4)]
             player.sort_hand()
@@ -65,6 +71,7 @@ class overseer():
     def bidding(self):
         '''Sets the bid, highest bidder and trump variables'''
         self.bid, self.trump, self.max_bidder = bidding_module.bidding(self.players)
+        return self.bid and self.trump and self.max_bidder  # Results in False when all are false
     
     def init_players(self):
         '''Creates list of Players'''
@@ -105,8 +112,8 @@ class overseer():
                 self.status = 'deal'
             elif self.status is 'deal':
                 self.render()
-                self.deal_cards()
                 self.status = 'play'
+                self.deal_cards()
             elif self.status is 'play':
                 self.render()
                 self.status = 'play' if self.play_one_turn() else 'finish round'
