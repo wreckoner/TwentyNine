@@ -157,20 +157,20 @@ class overseer():
         for i in range(4):
             if 'K' in suit[i]:
                 x=i
-                print 'x '+str(x)
+                #print 'x '+str(x)
                 flag=True
             for j in range(4):
                 if 'Q' in suit[j]:
                     y=j
                     flag2=True
-                    print 'y '+str(y)
+                    #print 'y '+str(y)
                 if flag and flag2:
                     if suit[x][0]==suit[y][0]:
                         pair=3
                         break
             if pair==3:
                 break
-        print pair
+        #print pair
         
         '''--------------------------------------End of Logic of Pair-------------------------'''
         
