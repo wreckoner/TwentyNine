@@ -129,11 +129,12 @@ class overseer():
                '9': 2, 
                '8': 0.5,
                '7': 0.5}
-        
+        aggression=randint(-2,2)
         suit=[]         # suit is taken to process the strings of the incoming parameter hand. 
         calculation=0   #total point calculation
         trump_order=[]  
         trump=''
+        pair=0
         print index
         for i in range(4):              
             suit.append(str(hand[i]).split(' - '))    # Here 'hand' is processed and ['spade - King'] is seperated into ['spade','King']
@@ -147,12 +148,35 @@ class overseer():
                 trump=suit[i][0]                                                                                    #(Spade,Spade,Spade,Heart) spade have 3 and hearts have 1.
                 print trump                                                                                         #(Spade,Spade,Heart,Heart) in this case their character value(from cons) 
                 break                                                                                               #will be checked.and if it is also same.then randomly
-
-
-
-        '''--------------------------------------Logics of Double-------------------------'''
-           
-           
+        hand_strength=15+int(round(calculation/2.615))
+        '''--------------------------------------Logic of Pair-------------------------'''
+        
+        flag=False
+        flag2=False
+        pair=0
+        for i in range(4):
+            if 'K' in suit[i]:
+                x=i
+                print 'x '+str(x)
+                flag=True
+            for j in range(4):
+                if 'Q' in suit[j]:
+                    y=j
+                    flag2=True
+                    print 'y '+str(y)
+                if flag and flag2:
+                    if suit[x][0]==suit[y][0]:
+                        pair=3
+                        break
+            if pair==3:
+                break
+        print pair
+        
+        '''--------------------------------------End of Logic of Pair-------------------------'''
+        
+        
+        
+        '''--------------------------------------Logic of Double-------------------------'''
            
         chances_of_double=20
         for i in range(4):
@@ -176,18 +200,27 @@ class overseer():
             chances_of_double+=100
             change_in_bid=int( round( (set_condition[our_set]+set_condition[opponent_set])/2 ) )
             change_in_bid=+randint(0,2)
-        
-#      return [chances_of_double,change_in_bid]   
+        probabilistic_outcome_of_double = self.probabilty(1,100,chances_of_double)
 
-        '''--------------------------------------End of Logics of Double-------------------------'''
+        '''--------------------------------------End of Logic of Double-------------------------'''
+        
+        final_bid=hand_strength+aggression+change_in_bid+pair
+           
+        '''--------------------------------------Logic of Seven-------------------------'''
+        chances_of_seven=0
+        if final_bid-hand_strength>3 and hand_strength<20 :
+            chances_of_seven+=(20-hand_strength)*2
+        probabilistic_outcome_of_seven = self.probability(1,10,chances_of_seven)
+               
+        '''--------------------------------------End of Logic of Seven-------------------------'''
 
-
-        aggression=randint(-2,2)
-        final_bid=15+int(round(calculation/2.615))+aggression
-        
-        
-        
-        result=[final_bid,trump,chances_of_double] 
+        result=[final_bid,trump,probabilistic_outcome_of_double,probabilistic_outcome_of_seven] 
         print result
-        print '------------------------------k'
+        print '------------------------------'
         return result
+    
+    def probability(self,upper_limit,lower_limit,critical_point):   
+        if randint(upper_limit,lower_limit) <= critical_point :     
+            return True
+        else :
+            return False
