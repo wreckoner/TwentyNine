@@ -18,6 +18,7 @@ class overseer():
         self.images = self.display_init()   # A dictionary which holds a reference to the background and display surfaces
         self.players = self.init_players()  # A list of the four players
         self.status_variables_init()
+        self.init_teams()
         
         
     def status_variables_init(self):
@@ -73,6 +74,9 @@ class overseer():
     def init_players(self):
         '''Creates list of Players'''
         return [HumanPlayerClass(self, index)if index is 1 else ComputerPlayerClass(self, index) for index in xrange(1, 5) ]
+    def init_teams(self):
+        self.team_a = ['a'] + [player for player in self.players if player.index in (1, 3)] + [0, 0]
+        self.team_b = ['b'] + [player for player in self.players if player.index in (2, 4)] + [0, 0]
     
     def menu(self):
         ''' loads Start Menu '''
@@ -95,6 +99,9 @@ class overseer():
         self.turn = []
         print '**************End Of Turn***************'
         return return_flag
+    
+    def score_turn(self):
+        pass
     
     def render(self):
         static.blit_background(self.images['screen'], self.images['background'])
