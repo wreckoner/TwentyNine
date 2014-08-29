@@ -14,27 +14,45 @@ def bidding(players):
     screen_backup = pygame.Surface.copy(screen)                                 
     # Create a backup of original screen
     font = pygame.font.SysFont("rockwell extra", 50, 1, 0)
-    max_bid = 15
-    players = tuple(copy.copy(players))
-    while len(players) > 1:
-        passed = []      # A list of flags used to check which players have passed. Set to True if a player passes the bid
-        for player in players:
-            bid = player.make_bid(max_bid)
-            pygame.display.update(screen.blit(screen_backup, (0, 0)))
-            if bid:
-                max_bid = bid
-                max_bidder = player
-                message = font.render('player %s has bid %s'%(player.index, bid), 1, (136, 255, 0))
-                passed.append(False)
-            else:
-                message = font.render('player %s has passed'%player.index, 1, (136, 255, 0))
-                passed.append(True)
-            pos = message.get_rect()
-            pos.center = screen.get_rect().center
-            pygame.display.update(screen.blit(message, pos))
-            pygame.time.delay(time_delay)
-            pygame.display.update(screen.blit(screen_backup, (0, 0)))
-        players = [player for player, flag in zip(players, passed) if not flag]
+    
+    max_bid, max_bidder, index, running = 15, None, 0, True
+    players = copy.copy(players)
+    bidders = map(players.pop, [0]*2)
+    
+    while running:
+        player = bidders[index]
+        bid = player.make_bid(max_bid)
+        # print index, player, bid    # used for debugging
+        if bid:
+            message = font.render('player %s has bid %s'%(player.index, bid), 1, (136, 255, 0))
+        else:
+            message = font.render('player %s has passed'%player.index, 1, (136, 255, 0))
+        pos = message.get_rect()
+        pos.center = screen.get_rect().center
+        pygame.display.update(screen.blit(message, pos))
+        pygame.time.delay(time_delay)
+        pygame.display.update(screen.blit(screen_backup, (0, 0)))
+        if bid and index is 0:
+            max_bid, max_bidder = bid, player
+            index += 1
+        elif not bid and index is 0 and max_bidder is bidders[index + 1] and len(players):
+            bidders[index] = players.pop(0)
+        elif not bid and index is 0 and max_bidder is not bidders[index + 1]:
+            index += 1
+        elif bid and index is 1 and max_bidder is bidders[index - 1]:
+            max_bid, max_bidder = bid, player
+            index -= 1
+        elif bid and index and max_bidder is not bidders[index - 1] and len(players):
+            max_bid, max_bidder = bid, player
+            bidders[index - 1] = players.pop(0)
+            index -= 1
+        elif not bid and index is 1 and max_bidder is bidders[index - 1] and len(players):
+            bidders[index] = players.pop(0)
+        elif not bid and index is 1 and max_bidder is not bidders[index - 1] and len(players):
+            bidders = players
+            players, index = [], 0
+        else:
+            running = False
     if max_bid is 15:
         # If all the players pass
         max_bid, trump, max_bidder = False, False, False
@@ -42,6 +60,7 @@ def bidding(players):
     else:
         trump = max_bidder.select_trump()
     return max_bid, trump, max_bidder
+    
 
 
 
@@ -122,12 +141,13 @@ def user_bidding(player, max_bid):
                     pygame.display.update(rect)
                 elif rect_submit.collidepoint(pos):
                     # When user clicks 'BID'
-                    pygame.display.update(screen.blit(screen_original, (0, 0)))
                     running = False
+                    pygame.display.update(screen.blit(screen_original, (0, 0)))
                 elif rect_cease.collidepoint(pos):
                     # When user clicks 'PASS'
                     bid  = False
                     running = False
+                    pygame.display.update(screen.blit(screen_original, (0, 0)))
             elif event.type == pygame.QUIT:
                 # When user clicks 'CLOSE' button
                 running = False
